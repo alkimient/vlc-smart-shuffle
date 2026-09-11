@@ -7,20 +7,28 @@ on:
     branches: [ main, master ]
   release:
     types: [created]
-  workflow_dispatch: # Allows manual triggering from UI and CLI
+  workflow_dispatch:
 
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install MSYS2 and Toolchain
+      - name: Install Tools
         run: choco install cmake
+      - name: Setup VLC Headers
+        run: |
+          mkdir vlc_sdk
+          curl -L https://github.com/videolan/vlc/archive/refs/heads/master.tar.gz -o vlc.tar.gz
+          tar -xzf vlc.tar.gz
+          # Move headers to a known location for CMake
+          mkdir vlc_sdk/include
+          cp -r vlc-master/include/* vlc_sdk/include/
       - name: Build Plugin
         run: |
           mkdir build
           cd build
-          cmake ..
+          cmake -DVLC_INCLUDE_DIR=C:/Users/runneradmin/vlc-smart-shuffle/vlc_sdk/include ..
           cmake --build .
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
