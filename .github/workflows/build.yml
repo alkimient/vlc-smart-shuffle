@@ -2,11 +2,12 @@ name: Build VLC Plugin
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
   release:
     types: [created]
+  workflow_dispatch: # Allows manual triggering from UI and CLI
 
 jobs:
   build-windows:
