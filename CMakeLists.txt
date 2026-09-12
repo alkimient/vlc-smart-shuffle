@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(vlc-smart-shuffle)
 
-# Default to standard Linux VLC header path if not specified
+# Force C11 standard to support VLC headers (Atomics and _Generic)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
 if(NOT VLC_INCLUDE_DIR)
     set(VLC_INCLUDE_DIR "/usr/include/vlc")
 endif()
