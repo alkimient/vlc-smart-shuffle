@@ -1,3 +1,4 @@
+#include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 #include <vlc_modules.h>
@@ -86,29 +87,4 @@ static int plugin_open(vlc_object_t *obj) {
     intf->p_sys = calloc(1, sizeof(intf_sys_t));
     if (!intf->p_sys) return VLC_ENOMEM;
 
-    var_AddCallback(intf->obj.libvlc, "key-pressed", on_key_press, intf);
-    var_AddCallback(pl_Get(intf), "input-current", on_playlist_input_current, intf);
-
-    return VLC_SUCCESS;
-}
-
-static void plugin_close(vlc_object_t *obj) {
-    intf_thread_t *intf = (intf_thread_t *) obj;
-    intf_sys_t *sys = intf->p_sys;
-    
-    var_DelCallback(intf->obj.libvlc, "key-pressed", on_key_press, intf);
-    var_DelCallback(pl_Get(intf), "input-current", on_playlist_input_current, intf);
-    
-    if (sys->p_permutation_list) free(sys->p_permutation_list);
-    free(sys);
-}
-
-vlc_module_begin()
-    set_shortname("SmartShuffle")
-    set_description("Plays all items in playlist once before repeating")
-    set_capability("interface", 0)
-    set_callbacks(&plugin_open, &plugin_close)
-    set_category(CAT_INTERFACE)
-    set_subcategory(SUBCAT_INTERFACE_HOTKEYS)
-    add_string("key-smart-shuffle", "Ctrl+S", "Toggle Smart Shuffle", "Plays all items once before repeating", false)
-vlc_module_end()
+    var_AddCallback(intf->obj.libvlc, "key-pressed", on_key_//...
