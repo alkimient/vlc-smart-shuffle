@@ -1,24 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 project(vlc-smart-shuffle)
 
-# Force C11 standard for all compilers
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
 
-# Platform-specific compiler flags
-if(MSVC)
-    # Explicitly force C11 for MSVC to resolve _Generic and Atomics errors
-    add_compile_options(/std:c11)
-endif()
-
-# Include Path Logic
 if(NOT VLC_INCLUDE_DIR)
     if(WIN32)
-        # Default for our CI download
         set(VLC_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/vlc_sdk/include")
     else()
-        # Standard Linux path
         set(VLC_INCLUDE_DIR "/usr/include/vlc")
     endif()
 endif()
@@ -34,5 +23,7 @@ endif()
 add_library(smart_shuffle MODULE src/main.c)
 set_target_properties(smart_shuffle PROPERTIES PREFIX "")
 
+# Use include_directories for broad search
+include_directories(${VLC_INCLUDE_DIR})
 target_include_directories(smart_shuffle PRIVATE ${VLC_INCLUDE_DIR})
 target_link_libraries(smart_shuffle ${VLC_LIBRARIES})
