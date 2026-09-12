@@ -23,12 +23,20 @@ jobs:
           cp -r vlc-master/include/* vlc_sdk/include/
       - name: Build with MinGW
         run: |
-          # Use modern CMake syntax to avoid 'cd' and '..' ambiguity
-          # -S . specifies the source directory (root)
-          # -B build specifies the build directory
           bash -c "cmake -S . -B build -G 'MinGW Makefiles' -DCMAKE_C_COMPILER=gcc -DCMAKE_C_FLAGS='-fPIC' -DVLC_INCLUDE_DIR=\"${{ github.workspace }}/vlc_sdk/include\" && cmake --build build"
+      - name: Find DLL Path
+        run: |
+          # Find where the DLL actually landed and save it to an environment file
+          $dllPath = (Get-ChildItem -Path build -Filter "smart_shuffle.dll" -Recurse).FullName
+          if ($dllPath) {
+            echo "DLL_PATH=$dllPath" >> $env:GITHUB_ENV
+            echo "Found DLL at: $dllPath"
+          } else {
+            echo "DLL not found in build directory"
+            exit 1
+          }
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: smart-shuffle-win64
-          path: build/smart_shuffle.dll
+          path: ${{ env.DLL_PATH }}
