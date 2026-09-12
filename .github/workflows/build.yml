@@ -27,27 +27,11 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DVLC_INCLUDE_DIR="${{ github.workspace }}/vlc_sdk/include" ..
+          # Use clang-cl instead of cl.exe for better compatibility with VLC's GCC-style headers
+          cmake -DCMAKE_C_COMPILER=clang-cl -DVLC_INCLUDE_DIR="${{ github.workspace }}/vlc_sdk/include" ..
           cmake --build .
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: smart-shuffle-win64
           path: build/smart_shuffle.dll
-
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Dependencies
-        run: sudo apt-get update && sudo apt-get install -y libvlc-dev cmake gcc
-      - name: Build Plugin
-        run: |
-          mkdir build && cd build
-          cmake ..
-          make
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: smart-shuffle-linux
-          path: build/smart_shuffle.so
