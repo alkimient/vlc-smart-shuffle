@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(vlc-smart-shuffle)
 
 if(MSVC)
+    # C17 is more stable in MSVC 2022 than strict C11 for these headers
     add_compile_options(/std:c17)
     add_compile_options(/experimental:c11atomics)
 else()
@@ -16,14 +17,6 @@ if(NOT VLC_INCLUDE_DIR)
     endif()
 endif()
 
-if(NOT VLC_LIBRARIES)
-    if(WIN32)
-        set(VLC_LIBRARIES "libvlccore" "libvlc")
-    else()
-        set(VLC_LIBRARIES "vlccore" "vlc")
-    endif()
-endif()
-
 add_library(smart_shuffle MODULE src/main.c)
 set_target_properties(smart_shuffle PROPERTIES PREFIX "")
 
@@ -32,4 +25,4 @@ if(NOT WIN32)
 endif()
 
 target_include_directories(smart_shuffle PRIVATE ${VLC_INCLUDE_DIR})
-target_link_libraries(smart_shuffle ${VLC_LIBRARIES})
+target_link_libraries(smart_shuffle "vlccore" "vlc")
