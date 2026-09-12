@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: smart-shuffle-win64
-          path: build/*.dll
+          path: /**/*.dll
