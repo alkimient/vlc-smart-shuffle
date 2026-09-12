@@ -5,21 +5,21 @@ project(vlc-smart-shuffle)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-# VLC headers use GCC-style attributes. 
-# If using MSVC (cl.exe), we need to be very careful with flags.
-# If using clang-cl, it's much more compatible.
-if(MSVC)
-    add_compile_options(/experimental:c11atomics)
-    # Bypass some of the strict syntax checks that trigger on VLC's GCC-style headers
-    add_compile_options(/wd4267) # Ignore possible loss of data (size_t to int)
-endif()
-
+# Include Path Logic
 if(NOT VLC_INCLUDE_DIR)
-    set(VLC_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/vlc_sdk/include")
+    if(WIN32)
+        set(VLC_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/vlc_sdk/include")
+    else()
+        set(VLC_INCLUDE_DIR "/usr/include/vlc")
+    endif()
 endif()
 
 if(NOT VLC_LIBRARIES)
-    set(VLC_LIBRARIES "libvlccore" "libvlc")
+    if(WIN32)
+        set(VLC_LIBRARIES "vlccore" "vlc")
+    else()
+        set(VLC_LIBRARIES "vlccore" "vlc")
+    endif()
 endif()
 
 add_library(smart_shuffle MODULE src/main.c)

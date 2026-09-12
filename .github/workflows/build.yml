@@ -14,8 +14,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Tools
-        run: choco install cmake
       - name: Setup VLC Headers
         run: |
           mkdir vlc_sdk
@@ -23,13 +21,11 @@ jobs:
           tar -xzf vlc.tar.gz
           mkdir vlc_sdk/include
           cp -r vlc-master/include/* vlc_sdk/include/
-      - name: Build Plugin
+      - name: Build with MinGW
         run: |
-          mkdir build
-          cd build
-          # Use clang-cl instead of cl.exe for better compatibility with VLC's GCC-style headers
-          cmake -DCMAKE_C_COMPILER=clang-cl -DVLC_INCLUDE_DIR="${{ github.workspace }}/vlc_sdk/include" ..
-          cmake --build .
+          # Use the pre-installed MSYS2/MinGW GCC toolchain
+          # We use 'bash' to ensure the environment is correctly set for gcc
+          bash -c "mkdir build && cd build && cmake -G 'MinGW Makefiles' -DCMAKE_C_COMPILER=gcc -DCMAKE_C_FLAGS='-fPIC' -DVLC_INCLUDE_DIR=\"${{ github.workspace }}/vlc_sdk/include\" .. && make"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
