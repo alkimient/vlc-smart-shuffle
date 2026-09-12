@@ -23,9 +23,9 @@ jobs:
           cp -r vlc-master/include/* vlc_sdk/include/
       - name: Build with MinGW
         run: |
-          # Use the pre-installed MSYS2/MinGW GCC toolchain
-          # We use 'bash' to ensure the environment is correctly set for gcc
-          bash -c "mkdir build && cd build && cmake -G 'MinGW Makefiles' -DCMAKE_C_COMPILER=gcc -DCMAKE_C_FLAGS='-fPIC' -DVLC_INCLUDE_DIR=\"${{ github.workspace }}/vlc_sdk/include\" .. && make"
+          # Use bash to execute a sequential script to avoid PowerShell escaping issues
+          # We ensure we are in the root directory before creating the build folder
+          bash -c "mkdir -p build && cd build && cmake -G 'MinGW Makefiles' -DCMAKE_C_COMPILER=gcc -DCMAKE_C_FLAGS='-fPIC' -DVLC_INCLUDE_DIR=\"${{ github.workspace }}/vlc_sdk/include\" .. && make"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
