@@ -28,4 +28,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: smart-shuffle-win64
-          path: D:/a/vlc-smart-shuffle/vlc-smart-shuffle/build/*.dll
+          path: ./**/*.dll
+          overwrite: true
+          include-hidden-files: true
